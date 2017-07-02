@@ -18,6 +18,8 @@ var bodyParser=require('body-parser');
 
 var mongoose=require('mongoose');
 
+var Bear=require('./nodeApi/models/bear');
+
 mongoose.conect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // connect to our database
 
 app.use(bodyParser.urlencoded({extended:true}));
