@@ -1,40 +1,51 @@
-//server.js
-
-//BASE SETUP
-
-// ==============================================================================================
+//server.js 
 
 
-// call the packages we need
+// llamar los paquetes
 
-var express=require('express'); //call express
+var express=require('express'); 
 
-var app=express();              // define our app using express
+var app=express();              // definir la variable usando express
 
-var bodyParser=require('body-parser'); 
+var bodyParser=require('body-parser'); // ? no entiendo aún la función del body-parser y su relación con un término denominado middleware (es la parte mas confusa)
 
-// configure app to usse boyParser();
-// this will let us get the data from a POST
+// configuración para usar body parser
+// se supone que esto permitirá obtener los datos desde un post
 
-var mongoose=require('mongoose');
+var mongoose=require('mongoose'); // ?
 
-var Bear=require('./nodeApi/models/bear');
+var Bear=require('./models/bear.js');
 
-mongoose.conect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // connect to our database
+mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // se supone que esta parte conecta con la base de datos pero falla al conectarse
+// revisé los detalles en stack overflow pero no entendí por qué razón se usa mongoose y la base de datos
+//https://stackoverflow.com/questions/27011007/application-not-connecting-to-mongoose-database
 
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({extended:true})); // ?
 
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // ?
 
-var port=process.env.PORT || 8080;  // set our port
+var port=process.env.PORT || 8080;  // establecer el puerto 
 
-// ROUTES FOR OUR API 
+// routes para la API
 
-// ===============================================================================================
 
-var router=express.Router();        // get an instance of the express Router
 
-// test route to make sure everything is working (accesed at GET http:localhost:8080/api)
+var router=express.Router();        // se crea una instancia de express 
+
+// ?
+
+var loggin=function(req,res,next){
+
+// esto ocurrirá con cada solicitud o rquest
+
+console.log(" something it's happening");
+next();
+
+}
+
+router.use(loggin); // 
+
+// se supone que con este callback se aseguro de que la concección con el servidor local funciona adecuadamente ? (accede la petición GET http:localhost:8080/api)
 
 var callback=function(req,res){
  var msg={message:'welcome to your API'};
@@ -43,41 +54,41 @@ var callback=function(req,res){
 
 router.get('/',callback)
 
-// more routes
+// otros routes
 
-// on routes that end in /bears
+// * (entiendo que es similar el ejemplo de los cafés )
 
 router.route('/bears')
 
-// create a bear (accesed at POST http://localhost:8080/api/bears)
+// se crea el objeto (accede a la petición POST http://localhost:8080/api/bears)
 
 .post(function(req,res){
 
-	var bear= new Bear();     //create a new instance of the Bear
+	var bear= new Bear();     // se crea una nueva instancia del objeto 
 
-	bear.name=req.body.name; // set the bears name (comes from the request)
+	bear.name=req.body.name; // ?
 
-	// save the bear and check for errors
+	// se guarda la instancia 
 
 	bear.save(function(err){
 
 		if (err)
 
 			res.send(err);
-		res.json({message: 'Bear has been created'});
+		res.json({message: 'Bear has been created'}); // aquí es donde se confirma que el POST funcíonó
 	});
 
 });
 
-//REGISTER OUR ROUTES ---------------------------------------------------------------------------
+// Se registran los routes 
 
-// all of our routes will be prefixed with api
+// ?
 
-app.use('/api',router);
+app.use('/api',router); // ?
 
-// START THE SERVER
+// Se inicia el servidor
 
-// ==============================================================================================
+
 
 app.listen(port);
 
