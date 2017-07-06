@@ -5,7 +5,7 @@
 
 var express=require('express'); 
 
-var app=express();              // definir la variable usando express
+var app=express();              // definir la variable usando express (objeto con muchas funciones)
 
 var bodyParser=require('body-parser'); // ? no entiendo aún la función del body-parser y su relación con un término denominado middleware (es la parte mas confusa)
 
@@ -16,11 +16,11 @@ var mongoose=require('mongoose'); // ?
 
 var Bear=require('./models/bear.js');
 
-mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // se supone que esta parte conecta con la base de datos pero falla al conectarse
+mongoose.connect('mongodb://localhost/test'); // se supone que esta parte conecta con la base de datos pero falla al conectarse
 // revisé los detalles en stack overflow pero no entendí por qué razón se usa mongoose y la base de datos
 //https://stackoverflow.com/questions/27011007/application-not-connecting-to-mongoose-database
 
-app.use(bodyParser.urlencoded({extended:true})); // ?
+app.use(bodyParser.urlencoded({extended:true})); // con la propiedad use nos permite utilizar body parser como middleware
 
 app.use(bodyParser.json()); // ?
 
@@ -78,9 +78,42 @@ router.route('/bears')
 		res.json({message: 'Bear has been created'}); // aquí es donde se confirma que el POST funcíonó
 	});
 
+})
+
+// se obtienen todos los objetos se accede a la petición GET ( http://localhost:8080/api/bears)
+
+.get(function(req,res){
+
+	Bear.find(function(err,bears){
+
+       if(err)
+
+            res.send(err);
+
+       res.json(bears);
+
+
+	});
+
 });
 
 // Se registran los routes 
+
+router.route('/bears/:bear_id')
+
+   .get(function(req,res){
+
+Bear.findById(req.params.bear_id, function(err,bear){
+
+	if (err) 
+
+		res.send(err);
+
+	   res.json(bear);
+
+      });
+
+   });
 
 // ?
 
