@@ -75,7 +75,8 @@ router.route('/bears')
 		if (err)
 
 			res.send(err);
-		res.json({message: 'Bear has been created'}); // aquí es donde se confirma que el POST funcíonó
+
+		res.status(201).json({message: 'Bear has been created'}); // aquí es donde se confirma que el POST funcíonó
 	});
 
 })
@@ -97,7 +98,7 @@ router.route('/bears')
 
 });
 
-// Se registran los routes 
+// Route para poder obtener un recurso por su id
 
 router.route('/bears/:bear_id')
 
@@ -105,14 +106,42 @@ router.route('/bears/:bear_id')
 
 Bear.findById(req.params.bear_id, function(err,bear){
 
-	if (err) 
+	if (err) {
 
 		res.send(err);
 
-	   res.json(bear);
+	   }
+
+	else if (!bear){
+
+		res.sendStatus(404);
+
+	}
+
+    else {
+	
+	    res.json(bear);
+       
+       }
 
       });
 
+   })
+
+   .delete(function(req,res){
+
+   	Bear.remove({
+
+   		_id: req.params.bear_id
+   	 }
+   	   ,function(err,bear){
+
+   		if(err)
+
+   			res.send(err);
+   		    res.json({message: "bear has been deleted"});
+   		  
+   	     });
    });
 
 // ?
