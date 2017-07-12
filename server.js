@@ -96,6 +96,17 @@ router.route('/bears')
 
 	});
 
+})
+
+.delete(function(req,res){
+	Bear.remove(req.params,function(err,bears){
+
+		if (err){
+			res.send(err);
+		}
+res.json({message: "bears has been removed"});
+
+	})
 });
 
 // Route para poder obtener un recurso por su id
