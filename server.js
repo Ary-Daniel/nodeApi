@@ -48,7 +48,7 @@ router.use(loggin); //
 // se supone que con este callback se aseguro de que la concección con el servidor local funciona adecuadamente ? (accede la petición GET http:localhost:8080/api)
 
 var callback=function(req,res){
- var msg={message:'welcome to your API'};
+	var msg={message:'welcome to your API'};
 	res.json(msg);
 }
 
@@ -87,11 +87,11 @@ router.route('/bears')
 
 	Bear.find(function(err,bears){
 
-       if(err)
+		if(err)
 
-            res.send(err);
+			res.send(err);
 
-       res.json(bears);
+		res.json(bears);
 
 
 	});
@@ -104,7 +104,7 @@ router.route('/bears')
 		if (err){
 			res.send(err);
 		}
-res.json({message: "bears has been removed"});
+		res.json({message: "bears has been removed"});
 
 	})
 });
@@ -113,47 +113,56 @@ res.json({message: "bears has been removed"});
 
 router.route('/bears/:bear_id')
 
-   .get(function(req,res){
+.get(function(req,res){
 
-Bear.findById(req.params.bear_id, function(err,bear){
+	var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
 
-	if (err) {
+	console.log(checkForHexRegExp.test(req.params.bear_id));
 
-		res.send(err);
+	if(checkForHexRegExp.test(req.params.bear_id)){
 
-	   }
+		Bear.findById(req.params.bear_id, function(err,bear){
 
-	else if (!bear){
+			if (err) {
 
-		res.sendStatus(404);
+				res.send(err);
 
+			}
+
+			else if (!bear){
+
+				res.sendStatus(404);
+
+			}
+
+			else {
+
+				res.json(bear);
+
+			}
+
+		}) }
+		else{
+			res.sendStatus(400);
+		}
+
+	})
+
+.delete(function(req,res){
+
+	Bear.remove({
+
+		_id: req.params.bear_id
 	}
+	,function(err,bear){
 
-    else {
-	
-	    res.json(bear);
-       
-       }
+		if(err)
 
-      });
+			res.send(err);
+		res.json({message: "bear has been deleted"});
 
-   })
-
-   .delete(function(req,res){
-
-   	Bear.remove({
-
-   		_id: req.params.bear_id
-   	 }
-   	   ,function(err,bear){
-
-   		if(err)
-
-   			res.send(err);
-   		    res.json({message: "bear has been deleted"});
-   		  
-   	     });
-   });
+	});
+});
 
 // ?
 
